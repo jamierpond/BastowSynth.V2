@@ -1,75 +1,73 @@
 #include "FreqAProp.h"
 
- BastowFreqSlider::BastowFreqSlider()
- {
-    setLookAndFeel(&lf_);
-    setTextBoxStyle(juce::Slider::NoTextBox, false, 90, 0);
-    setPopupDisplayEnabled(true, false, this);
-    setTextValueSuffix(" dB");
+BastowFreqSlider::BastowFreqSlider()
+{
+    setLookAndFeel (&lf_);
+    setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
+    setPopupDisplayEnabled (true, false, this);
+    setTextValueSuffix (" dB");
     setVelocityBasedMode (true);
     setVelocityModeParameters (0.09, 1, 0.5, false);
-    setSliderStyle(SliderStyle::LinearHorizontal);
+    setSliderStyle (SliderStyle::LinearHorizontal);
 }
- 
+
 BastowFreqSlider::~BastowFreqSlider()
 {
-    setLookAndFeel(nullptr);
+    setLookAndFeel (nullptr);
 }
 
-bool BastowFreqSlider::hitTest(int x, int y)
+bool BastowFreqSlider::hitTest (int x, int y)
 {
-   // int scalingFactor = 0; // Adjust the scaling factor as needed
-    int dia = std::min(getWidth(), getHeight()) ;
-    return getLocalBounds().getCentre().getDistanceFrom({ x, y }) < dia;
+    // int scalingFactor = 0; // Adjust the scaling factor as needed
+    int dia = std::min (getWidth(), getHeight());
+    return getLocalBounds().getCentre().getDistanceFrom ({ x, y }) < dia;
 }
 
-void BastowFreqSlider::mouseDoubleClick(const juce::MouseEvent& )
+void BastowFreqSlider::mouseDoubleClick (const juce::MouseEvent&)
 {
     // Set the slider value back to the default value
-    setValue(0.0, juce::NotificationType::sendNotification);
+    setValue (0.0, juce::NotificationType::sendNotification);
 }
 
-
-void BastowFreqSlider::setColour(juce::Colour colourToSet)
+void BastowFreqSlider::setColour (juce::Colour colourToSet)
 {
-    lf_.setSliderColour(colourToSet);
+    lf_.setSliderColour (colourToSet);
 }
 
- BastowGainSlider::BastowGainSlider()
- {
-    setLookAndFeel(&glf_);
-    setTextBoxStyle(juce::Slider::NoTextBox, false, 90, 0);
-    setPopupDisplayEnabled(true, false, this);
-    setTextValueSuffix(" dB");
+BastowGainSlider::BastowGainSlider()
+{
+    setLookAndFeel (&glf_);
+    setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
+    setPopupDisplayEnabled (true, false, this);
+    setTextValueSuffix (" dB");
     setVelocityBasedMode (true);
     setVelocityModeParameters (0.09, 1, 0.5, false);
-    setSliderStyle(SliderStyle::LinearVertical);
-    addMouseListener(this, true);
-    
-}
- 
-BastowGainSlider::~BastowGainSlider()
-{
-    setLookAndFeel(nullptr);
+    setSliderStyle (SliderStyle::LinearVertical);
+    addMouseListener (this, true);
 }
 
-bool BastowGainSlider::hitTest(int x, int y)
+BastowGainSlider::~BastowGainSlider()
+{
+    setLookAndFeel (nullptr);
+}
+
+bool BastowGainSlider::hitTest (int x, int y)
 {
     int scalingFactor = 4; // Adjust the scaling factor as needed
-    int dia = std::min(getWidth(), getHeight()) * scalingFactor;
-    return getLocalBounds().getCentre().getDistanceFrom({ x , y  }) < dia;
+    int dia = std::min (getWidth(), getHeight()) * scalingFactor;
+    return getLocalBounds().getCentre().getDistanceFrom ({ x, y }) < dia;
     return true;
 }
 
-void BastowGainSlider::setColour(juce::Colour colourToSet)
+void BastowGainSlider::setColour (juce::Colour colourToSet)
 {
-    glf_.setSliderColour(colourToSet);
+    glf_.setSliderColour (colourToSet);
 }
-void BastowGainSlider::setText(std::string textToSet)
+void BastowGainSlider::setText (std::string textToSet)
 {
-    glf_.setSliderText(textToSet);
+    glf_.setSliderText (textToSet);
 }
-void BastowGainSlider::setFont(juce::Font fontToSet)
+void BastowGainSlider::setFont (juce::Font fontToSet)
 {
-    glf_.setSliderFont(fontToSet);
+    glf_.setSliderFont (fontToSet);
 }

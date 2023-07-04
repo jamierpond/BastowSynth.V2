@@ -1,27 +1,21 @@
 #pragma once
-#include <JuceHeader.h>
 #include "../../Source/ParamId.h"
+#include <JuceHeader.h>
 
 class FreqSliderLookAndFeel : public juce::LookAndFeel_V4
 {
 public:
     FreqSliderLookAndFeel();
-    ~FreqSliderLookAndFeel()override;
-                            
-    void drawLinearSlider (juce::Graphics& , int x, int y, int width, int height,
-                           float sliderPos,
-                           float minSliderPos,
-                           float maxSliderPos,
-                           const juce::Slider::SliderStyle, juce::Slider&) override;
-    
+    ~FreqSliderLookAndFeel() override;
 
-    void setSliderColour(juce::Colour colourToUse)
-   {
-       mainSliderColour_ = colourToUse;
-   }
-    float thumbPosition(int x);
-  
-    
+    void drawLinearSlider (juce::Graphics&, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const juce::Slider::SliderStyle, juce::Slider&) override;
+
+    void setSliderColour (juce::Colour colourToUse)
+    {
+        mainSliderColour_ = colourToUse;
+    }
+    float thumbPosition (int x);
+
 private:
     float maxPoint_ = 0;
     float b_;

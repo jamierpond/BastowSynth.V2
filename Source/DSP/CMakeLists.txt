@@ -1,7 +1,7 @@
 target_sources("${PROJECT_NAME}"
-    PRIVATE
-	Osc.cpp
-	WaveGen.cpp
-	WaveSetup.cpp)
+        PRIVATE
+        Osc.cpp
+        WaveGen.cpp
+        WaveSetup.cpp)
 
 

@@ -2,29 +2,27 @@
 
 #include <JuceHeader.h>
 
-
 class MyResizableBorderComponent : public juce::ResizableBorderComponent
 {
 public:
-    MyResizableBorderComponent(juce::Component* componentToResize,
-                               juce::ComponentBoundsConstrainer* constrainer)
-        : juce::ResizableBorderComponent(componentToResize, constrainer)
+    MyResizableBorderComponent (juce::Component* componentToResize,
+                                juce::ComponentBoundsConstrainer* constrainer)
+        : juce::ResizableBorderComponent (componentToResize, constrainer)
     {
         setSize (20, 20);
     }
 
-    void resizeStarted(const juce::MouseEvent&) 
+    void resizeStarted (const juce::MouseEvent&)
     {
         originalBounds = getParentComponent()->getBounds();
     }
 
-    void resizeEnded(const juce::MouseEvent&) 
+    void resizeEnded (const juce::MouseEvent&)
     {
-        const juce::Rectangle<int> newBounds = originalBounds.withSizeKeepingCentre(getParentComponent()->getBounds().getWidth(), getParentComponent()->getBounds().getHeight());
+        const juce::Rectangle<int> newBounds = originalBounds.withSizeKeepingCentre (getParentComponent()->getBounds().getWidth(), getParentComponent()->getBounds().getHeight());
         if (originalBounds != newBounds)
         {
-            getParentComponent()->setBounds(newBounds);
-            
+            getParentComponent()->setBounds (newBounds);
         }
     }
 
@@ -32,44 +30,42 @@ private:
     juce::Rectangle<int> originalBounds;
 };
 
-
-
 class MyDraggableComponent : public juce::Component
 {
 public:
     MyDraggableComponent()
     {
         setSize (20, 20);
-        
-        addMouseListener(this, true);
 
-        constrainer.setMinimumSize(50, 50); // Set minimum size for constraining
-        constrainer.setMaximumSize(800, 600); // Set maximum size for constraining
+        addMouseListener (this, true);
 
-        resizer = std::make_unique<MyResizableBorderComponent>(this, &constrainer); // Create a unique pointer to MyResizableBorderComponent
-        addMouseListener(resizer.get(), true); // Add mouse listener to the resizer component
+        constrainer.setMinimumSize (50, 50); // Set minimum size for constraining
+        constrainer.setMaximumSize (800, 600); // Set maximum size for constraining
+
+        resizer = std::make_unique<MyResizableBorderComponent> (this, &constrainer); // Create a unique pointer to MyResizableBorderComponent
+        addMouseListener (resizer.get(), true); // Add mouse listener to the resizer component
     }
 
-    void paint(juce::Graphics& g) override
+    void paint (juce::Graphics& g) override
     {
-        g.fillAll(juce::Colours::lightblue);
+        g.fillAll (juce::Colours::lightblue);
     }
 
-    void mouseDown(const juce::MouseEvent& e) override
+    void mouseDown (const juce::MouseEvent& e) override
     {
         lastMouseDownPosition = e.getPosition();
     }
 
-    void mouseDrag(const juce::MouseEvent& e) override
+    void mouseDrag (const juce::MouseEvent& e) override
     {
-        const juce::Point<int> delta(e.getPosition() - lastMouseDownPosition);
-        setTopLeftPosition(getPosition() + delta);
+        const juce::Point<int> delta (e.getPosition() - lastMouseDownPosition);
+        setTopLeftPosition (getPosition() + delta);
         lastMouseDownPosition = e.getPosition();
 
         printComponentProperties();
     }
 
-    void mouseUp(const juce::MouseEvent&) override
+    void mouseUp (const juce::MouseEvent&) override
     {
         printComponentProperties();
     }
