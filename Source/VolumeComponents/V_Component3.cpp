@@ -60,7 +60,7 @@ ThirdVCompartment::ThirdVCompartment(BASAudioProcessor& p) :
         waveTypeB[i] = std::move(buttons[i]);
 
         {
-           createButtonAttachment(audioProcessor_.tree, waveTypeAttachments_[i], "wavetypeId" + std::to_string(static_cast<std::size_t>(i)), *waveTypeB[i]);
+           createButtonAttachment(audioProcessor_.tree, waveTypeAttachments_[i], getWaveTypeId(i), *waveTypeB[i]);
         }
          buttonArray_[i] = waveTypeB[i].get();
     }

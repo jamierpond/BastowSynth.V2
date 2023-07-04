@@ -3,7 +3,7 @@
 #include "Component_Placement.h"
 #include "../../Source/BASPluginProcessor.h"
 #include "FreqSLAF.h"
-#include "ParamId.h"
+#include "../ParamId.h"
 #include "FreqAProp.h"
 #include "Osc.h"
 #include "CustomButton.h"

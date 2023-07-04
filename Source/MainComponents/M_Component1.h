@@ -3,7 +3,7 @@
 #include "../../Source/BASPluginProcessor.h"
 #include "FreqAProp.h"
 #include "CustomButton.h"
-#include "ParamId.h"
+#include "../ParamId.h"
 #include "Osc.h"
 
 class MainVCompartment : public juce::Component,  public juce::Slider::Listener

@@ -57,7 +57,7 @@ MainVCompartment::MainVCompartment(BASAudioProcessor& p) :
         }
         else
         {
-            createSliderAttachment(audioProcessor_.tree, gainAttachments_[static_cast<std::size_t>(i)], "gainId" + std::to_string(static_cast<std::size_t>(i)), gainSliders[static_cast<std::size_t>(i)]);
+            createSliderAttachment(audioProcessor_.tree, gainAttachments_[static_cast<std::size_t>(i)], getGainId(i - 1), gainSliders[static_cast<std::size_t>(i)]);
         }
     }
 

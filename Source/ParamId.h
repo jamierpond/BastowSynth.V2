@@ -5,17 +5,38 @@
 // https://corecoding.com/utilities/rgb-or-hex-to-float.php
 
 // Component Volume Button 1 - 3 ID's
-#define cvb1Id "cvb1"
-#define CVB1Name "CVB1"
+constexpr static int versionHint = 1;
+const static juce::String cvb1Id =  "cvb1";
+const static juce::String CVB1Name =  "CVB1";
+const static juce::String cvb2Id =  "cvb2";
+const static juce::String CVB2Name =  "CVB2";
+const static juce::String gain0Id =  "gain0Id";
+const static juce::String Gain0Name =  "Gain0ID";
+const static juce::String cvb3Id =  "cvb3";
+const static juce::String CVB3Name =  "CVB3";
 
-#define cvb2Id "cvb2"
-#define CVB2Name "CVB2"
+constexpr static std::string_view baseGainId = "gainId";
+constexpr static std::string_view baseGainName = "GainName";
+constexpr static std::string_view baseFreqId = "freqId";
+constexpr static std::string_view baseFreqName = "FreqName";
+constexpr static std::string_view baseWaveTypeId = "waveTypeId";
+constexpr static std::string_view baseWaveTypeName = "WaveTypeName";
 
-#define gain0Id "gain0Id"
-#define Gain0Name "Gain0ID"
+template <typename T>
+constexpr static std::string concatenateStringAndInt(T base, int index)
+{
+    return std::string(base) + std::to_string(index);
+}
 
-#define cvb3Id "cvb3"
-#define CVB3Name "CVB3"
+constexpr static std::string getWaveTypeId(int index)
+{
+    return concatenateStringAndInt(baseWaveTypeId, index);
+}
+
+constexpr static std::string getGainId(int index)
+{
+    return concatenateStringAndInt(baseGainId, index);
+}
 
 namespace C1
 {
