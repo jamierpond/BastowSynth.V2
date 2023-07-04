@@ -1,7 +1,7 @@
 #pragma once
-#include <JuceHeader.h>
-#include "WaveSetup.h"
 #include "WaveGen.h"
+#include "WaveSetup.h"
+#include <JuceHeader.h>
 
 class WavetableSynthesiserSound : public juce::SynthesiserSound
 {
@@ -13,14 +13,14 @@ public:
 class WavetableSynthesiserVoice : public juce::SynthesiserVoice
 {
 public:
- WavetableSynthesiserVoice()
-        : wavetableSize_(1024),
-        waveType_(kNumOscillators_, 4),
-        gains_(kNumOscillators_),
-        sineTable_(wavetableSize_),
-        frequencyP_(kNumOscillators_),
-        frequencyN_(kNumOscillators_),
-        gOscillators_(kNumOscillators_)
+    WavetableSynthesiserVoice()
+        : wavetableSize_ (1024),
+          waveType_ (kNumOscillators_, 4),
+          gains_ (kNumOscillators_),
+          sineTable_ (wavetableSize_),
+          frequencyP_ (kNumOscillators_),
+          frequencyN_ (kNumOscillators_),
+          oscillators_ (kNumOscillators_)
     {
         // Initialize any necessary member variables
         CreateWaveTable();
@@ -35,38 +35,37 @@ public:
         }
     }
 
-    void setMasterGain(float masterVol)
+    void setMasterGain (float masterVol)
     {
         masterGain_ = masterVol * level_;
     }
 
-    void setGain(unsigned int index, float gain)
+    void setGain (unsigned int index, float gain)
     {
         if (index < kNumOscillators_)
             gains_[index] = gain;
     }
 
-    void setFrequency(unsigned int index, int frequency)
+    void setFrequency (unsigned int index, int frequency)
     {
         if (index < kNumOscillators_)
         {
-            frequencyP_[index] = static_cast<int>(frequency) / 24;
+            frequencyP_[index] = static_cast<int> (frequency) / 24;
         }
     }
 
-   
-    bool canPlaySound(juce::SynthesiserSound*) override { return true; }
+    bool canPlaySound (juce::SynthesiserSound*) override { return true; }
 
-    static float noteHz(int midiNoteNumber, double centsOffset)
+    static float noteHz (int midiNoteNumber, double centsOffset)
     {
-        double hertz = juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-        hertz *= std::pow(4.0, centsOffset / 4800);
-        return (float)hertz;
+        double hertz = juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber);
+        hertz *= std::pow (4.0, centsOffset / 4800);
+        return (float) hertz;
     }
 
-
-    void setWaveType(unsigned int index, int waveType)
+    void setWaveType (unsigned int index, int waveType)
     {
+        // this is very confusing, is waveType changing size?
         if (4 < waveType_.size())
         {
             waveType_[index] = waveType;
@@ -76,138 +75,132 @@ public:
         }
     }
 
-    
-    float pitchBendCents(int index)
+    float pitchBendCents (int index)
     {
-        if (frequencyP_[static_cast<std::vector<float>::size_type>(index)] >= 0.0f)
+        if (frequencyP_[static_cast<std::vector<float>::size_type> (index)] >= 0.0f)
         {
             // shifting up
-            return frequencyP_[static_cast<std::vector<float>::size_type>(index)] * pitchBendUpSemitones_ * 100;
+            return frequencyP_[static_cast<std::vector<float>::size_type> (index)] * pitchBendUpSemitones_ * 100;
         }
         else
         {
             // shifting down
-            return -1 * frequencyP_[static_cast<std::vector<float>::size_type>(index)] * pitchBendDownSemitones_ * 100;
+            return -1 * frequencyP_[static_cast<std::vector<float>::size_type> (index)] * pitchBendDownSemitones_ * 100;
         }
     }
 
-  
-
-    void startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound*, int /*currentPitchWheelPosition*/) override
+    void startNote (int midiNoteNumber, float velocity, juce::SynthesiserSound*, int /*currentPitchWheelPosition*/) override
     {
-        
         float oscillatorFrequency;
         float oscGain;
-        
-        if (buttonPressed == true) 
+
+        if (buttonPressed == true)
         {
             changeOscillator();
             buttonPressed = false; // Reset the flag after changing the oscillator
         }
-        else{
+        else
+        {
             buttonPressed = true;
         }
-        
+
         for (unsigned int n = 0; n < kNumOscillators_; ++n)
         {
-          
             float frequencyOffset = ((n + 1) * frequencyP_[n]) * (n * frequencyIncrement_);
-            float harmonicFrequency = noteHz(midiNoteNumber, 0) * (n + 1); // calculate frequency for the current harmonic
+            float harmonicFrequency = noteHz (midiNoteNumber, 0) * (n + 1); // calculate frequency for the current harmonic
             frequencyN_[n] = harmonicFrequency + frequencyOffset;
             level_ = velocity;
             for (unsigned int s = 0; s < 4; ++s)
             {
                 oscillatorFrequency = frequencyN_[n];
-                gOscillators_[n]->setFrequency(oscillatorFrequency);
-               
+                oscillators_[n]->setFrequency (oscillatorFrequency);
+
                 oscGain = gains_[n];
-                
-                gOscillators_[n]->setAmplitude(oscGain);
-              
+
+                oscillators_[n]->setAmplitude (oscGain);
             }
         }
-       
     }
 
-    void stopNote(float /*velocity*/, bool /*allowTailOff*/) override
+    void stopNote (float /*velocity*/, bool /*allowTailOff*/) override
     {
         clearCurrentNote();
     }
 
-    void pitchWheelMoved(int /*newValue*/) override {}
+    void pitchWheelMoved (int /*newValue*/) override {}
 
-    void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override {}
+    void controllerMoved (int /*controllerNumber*/, int /*newValue*/) override {}
 
-    void renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
+    void renderNextBlock (juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
     {
         for (int sample = 0; sample < numSamples; ++sample)
         {
             float value = 0.0f;
-            for (unsigned int i = 0; i < gOscillators_.size(); ++i)
+            for (unsigned int i = 0; i < oscillators_.size(); ++i)
             {
-                value += (gOscillators_[i]->process()) * gains_[i];
+                value += (oscillators_[i]->process()) * gains_[i];
             }
 
             value *= masterGain_;
 
             for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
-                outputBuffer.addSample(channel, startSample + sample, value);
+                outputBuffer.addSample (channel, startSample + sample, value);
         }
     }
 
     std::vector<int> waveType_;
     bool buttonPressed = false;
-private:
 
+private:
     void CreateWaveTable()
-    {   
+    {
         sineTable_.clear();
-        sineTable_.resize(wavetableSize_);
-        generation_ = std::make_unique<GenerateWavetable>((float)getSampleRate(), sineTable_, phase_);
+        sineTable_.resize (wavetableSize_);
+        generation_ = std::make_unique<GenerateWavetable> ((float) getSampleRate(), sineTable_, phase_);
         for (unsigned int n = 0; n < kNumOscillators_; ++n)
-        { 
-            sineTable_ = generation_->prompt_Harmonics((1));
+        {
+            sineTable_ = generation_->prompt_Harmonics ((1));
         }
     }
 
     void CreateNewWaveTable()
-    {   
+    {
         sineTable_.clear();
-        sineTable_.resize(wavetableSize_);
-        generation_ = std::make_unique<GenerateWavetable>((float)getSampleRate(), sineTable_, phase_);
+        sineTable_.resize (wavetableSize_);
+        generation_ = std::make_unique<GenerateWavetable> ((float) getSampleRate(), sineTable_, phase_);
         for (unsigned int n = 0; n < kNumOscillators_; ++n)
-        { 
-            sineTable_ = generation_->prompt_Harmonics(static_cast<unsigned int>(waveType_[n]));
+        {
+            sineTable_ = generation_->prompt_Harmonics (static_cast<unsigned int> (waveType_[n]));
         }
     }
     void CreateOscillator()
-    { 
+    {
         CreateWaveTable();
-        gOscillators_.clear();
-        gOscillators_.resize(kNumOscillators_);
-         for (unsigned int n = 0; n < kNumOscillators_; ++n)
+        oscillators_.clear();
+        oscillators_.resize (kNumOscillators_);
+        for (unsigned int n = 0; n < kNumOscillators_; ++n)
         {
-            gOscillators_[n] =std::make_unique<Wavetable>((float)getSampleRate(), sineTable_, phase_);
+            oscillators_[n] = std::make_unique<Wavetable> ((float) getSampleRate(), sineTable_, phase_);
         }
     }
     void changeOscillator()
     {
-    if (buttonPressed == true) 
+        if (buttonPressed == true)
         {
             CreateNewWaveTable();
             buttonPressed = false; // Reset the flag after changing the oscillator
-        
-        gOscillators_.clear();
-        gOscillators_.resize(kNumOscillators_);
-        for (unsigned int n = 0; n < kNumOscillators_; ++n)
+
+            oscillators_.clear();
+            oscillators_.resize (kNumOscillators_);
+            for (unsigned int n = 0; n < kNumOscillators_; ++n)
+            {
+                oscillators_[n] = std::make_unique<Wavetable> ((float) getSampleRate(), sineTable_, phase_);
+            }
+        }
+        else
         {
-            gOscillators_[n] = std::make_unique<Wavetable>((float)getSampleRate(), sineTable_, phase_);
+            buttonPressed = true; // Set the flag to false if it was previously true
         }
-        }
-         else
-    {
-        buttonPressed = true; // Set the flag to false if it was previously true
-    }
     }
     static constexpr unsigned int kNumOscillators_ = 33;
     size_t wavetableSize_;
@@ -222,11 +215,7 @@ private:
     std::vector<float> sineTable_;
     std::vector<float> frequencyP_;
     std::vector<float> frequencyN_;
-    
-    
 
-    std::vector<std::unique_ptr<Wavetable>> gOscillators_;
+    std::vector<std::unique_ptr<Wavetable>> oscillators_;
     std::unique_ptr<GenerateWavetable> generation_;
-    
-    
 };

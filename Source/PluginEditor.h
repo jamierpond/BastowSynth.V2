@@ -8,20 +8,19 @@
 
 #pragma once
 
-#include <JuceHeader.h>
 #include "BASPluginProcessor.h"
+#include "Component_Placement.h"
+#include "M_Component1.h"
 #include "V_Component1.h"
 #include "V_Component2.h"
 #include "V_Component3.h"
-#include "M_Component1.h"
-#include "Component_Placement.h"
-
+#include <JuceHeader.h>
 
 //==============================================================================
 /**
  * Change the slider and harmonic colour so that its grey non in use
-*/ 
-class BASAudioProcessorEditor  : public juce::AudioProcessorEditor
+*/
+class BASAudioProcessorEditor : public juce::AudioProcessorEditor
 {
 public:
     BASAudioProcessorEditor (BASAudioProcessor&);
@@ -30,7 +29,7 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
-    void setButtonImages(juce::ImageButton& button, const juce::Image& overlayImage, const juce::Image& normalImage, const juce::Image& downImage);
+    void setButtonImages (juce::ImageButton& button, const juce::Image& overlayImage, const juce::Image& normalImage, const juce::Image& downImage);
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -39,8 +38,8 @@ private:
 
     // Sets the main background for the synth
     juce::Image background;
-    
-    // Creates a draggable component used for finding the size values faster 
+
+    // Creates a draggable component used for finding the size values faster
     MyDraggableComponent vComponent;
     MyResizableBorderComponent resizableBorderComponent;
 
@@ -56,34 +55,34 @@ private:
     juce::ImageButton cvb1;
     juce::ImageButton cvb2;
     juce::ImageButton cvb3;
-  
+
     using tree = juce::AudioProcessorValueTreeState;
     using ButtonAttachment = tree::ButtonAttachment;
     ButtonAttachment cvbA1, cvbA2, cvbA3;
-    
-    juce::Image downImage1 = juce::ImageCache::getFromMemory(BinaryData::B1_Off_png,
-        BinaryData::B1_Off_pngSize);
-    juce::Image overlayImage1 = juce::ImageCache::getFromMemory(BinaryData::B1_Over_png,
-        BinaryData::B1_Over_pngSize);
-    juce::Image normalImage1 = juce::ImageCache::getFromMemory(BinaryData::B1_Norm_png,
-        BinaryData::B1_Norm_pngSize);
-    
-    juce::Image downImage2 = juce::ImageCache::getFromMemory(BinaryData::B2_Off_png,
-        BinaryData::B2_Off_pngSize);
-    juce::Image overlayImage2 = juce::ImageCache::getFromMemory(BinaryData::B2_Over_png,
-        BinaryData::B2_Over_pngSize);
-    juce::Image normalImage2 = juce::ImageCache::getFromMemory(BinaryData::B2_Norm_png,
-        BinaryData::B2_Norm_pngSize);
 
-    juce::Image downImage3 = juce::ImageCache::getFromMemory(BinaryData::B3_Off_png,
-        BinaryData::B3_Off_pngSize);
-    juce::Image overlayImage3 = juce::ImageCache::getFromMemory(BinaryData::B3_Over_png,
-        BinaryData::B3_Over_pngSize);
-    juce::Image normalImage3 = juce::ImageCache::getFromMemory(BinaryData::B3_Norm_png,
-        BinaryData::B3_Norm_pngSize);
+    juce::Image downImage1 = juce::ImageCache::getFromMemory (BinaryData::B1_Off_png,
+                                                              BinaryData::B1_Off_pngSize);
+    juce::Image overlayImage1 = juce::ImageCache::getFromMemory (BinaryData::B1_Over_png,
+                                                                 BinaryData::B1_Over_pngSize);
+    juce::Image normalImage1 = juce::ImageCache::getFromMemory (BinaryData::B1_Norm_png,
+                                                                BinaryData::B1_Norm_pngSize);
 
-   // ThirdVCompartment* componentToManipulate = new ThirdVCompartment(audioProcessor);
-   // ResizableComponent* draggableResizableComponent = new ResizableComponent(componentToManipulate);
+    juce::Image downImage2 = juce::ImageCache::getFromMemory (BinaryData::B2_Off_png,
+                                                              BinaryData::B2_Off_pngSize);
+    juce::Image overlayImage2 = juce::ImageCache::getFromMemory (BinaryData::B2_Over_png,
+                                                                 BinaryData::B2_Over_pngSize);
+    juce::Image normalImage2 = juce::ImageCache::getFromMemory (BinaryData::B2_Norm_png,
+                                                                BinaryData::B2_Norm_pngSize);
+
+    juce::Image downImage3 = juce::ImageCache::getFromMemory (BinaryData::B3_Off_png,
+                                                              BinaryData::B3_Off_pngSize);
+    juce::Image overlayImage3 = juce::ImageCache::getFromMemory (BinaryData::B3_Over_png,
+                                                                 BinaryData::B3_Over_pngSize);
+    juce::Image normalImage3 = juce::ImageCache::getFromMemory (BinaryData::B3_Norm_png,
+                                                                BinaryData::B3_Norm_pngSize);
+
+    // ThirdVCompartment* componentToManipulate = new ThirdVCompartment(audioProcessor);
+    // ResizableComponent* draggableResizableComponent = new ResizableComponent(componentToManipulate);
     //MyDraggableComp draggableComponent;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BASAudioProcessorEditor)
-    };
+};
