@@ -14,9 +14,9 @@ if(APPLE)
     list(APPEND formats "AU")
 endif()
 
-add_subdirectory(JUCE)
+#add_subdirectory(JUCE)
 
-#find_package(JUCE CONFIG REQUIRED)
+add_subdirectory(External/JUCE)
 
 juce_add_plugin("${PROJECT_NAME}"
     VERSION "2.0.0"
