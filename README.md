@@ -6,3 +6,8 @@ Work in Progress!
 
 This is a template of what I would want at the end of the project.
 <img width="407" alt="Screenshot 2023-07-04 at 19 25 47" src="https://github.com/Bastow2000/BastowSynth.V2/assets/77554338/16b060d5-b023-4650-b7b2-c40d44d65dd8">
+
+
+
+Development of BastowSynth 
+<img width="964" alt="Screenshot 2023-07-05 at 09 09 03" src="https://github.com/Bastow2000/BastowSynth.V2/assets/77554338/a1973ddc-3ec9-450a-93a5-262a775d83ab">
