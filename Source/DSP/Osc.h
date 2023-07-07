@@ -14,13 +14,7 @@ class WavetableSynthesiserVoice : public juce::SynthesiserVoice
 {
 public:
     WavetableSynthesiserVoice()
-        : wavetableSize_ (1024),
-          waveType_ (kNumOscillators_, 4),
-          gains_ (kNumOscillators_),
-          sineTable_ (wavetableSize_),
-          frequencyP_ (kNumOscillators_),
-          frequencyN_ (kNumOscillators_),
-          oscillators_ (kNumOscillators_)
+        : waveType_ (kNumOscillators_, 4)
     {
         // Initialize any necessary member variables
         CreateWaveTable();
@@ -148,6 +142,7 @@ public:
         }
     }
 
+    // TODO
     std::vector<int> waveType_;
     bool buttonPressed = false;
 
@@ -173,11 +168,10 @@ private:
             sineTable_ = generation_->prompt_Harmonics (static_cast<unsigned int> (waveType_[n]));
         }
     }
+
     void CreateOscillator()
     {
         CreateWaveTable();
-        oscillators_.clear();
-        oscillators_.resize (kNumOscillators_);
         for (unsigned int n = 0; n < kNumOscillators_; ++n)
         {
             oscillators_[n] = std::make_unique<Wavetable> ((float) getSampleRate(), sineTable_, phase_);
@@ -190,8 +184,6 @@ private:
             CreateNewWaveTable();
             buttonPressed = false; // Reset the flag after changing the oscillator
 
-            oscillators_.clear();
-            oscillators_.resize (kNumOscillators_);
             for (unsigned int n = 0; n < kNumOscillators_; ++n)
             {
                 oscillators_[n] = std::make_unique<Wavetable> ((float) getSampleRate(), sineTable_, phase_);
@@ -202,8 +194,9 @@ private:
             buttonPressed = true; // Set the flag to false if it was previously true
         }
     }
-    static constexpr unsigned int kNumOscillators_ = 33;
-    size_t wavetableSize_;
+    constexpr static unsigned int kNumOscillators_ = 33;
+    constexpr static size_t wavetableSize_ = 1024;
+
     float level_ = 0.0f;
     float phase_ = 0.0f;
     float masterGain_ = 0.0f;
@@ -211,11 +204,12 @@ private:
     int pitchBendUpSemitones_ = 24;
     int pitchBendDownSemitones_ = 12;
 
-    std::vector<float> gains_;
-    std::vector<float> sineTable_;
-    std::vector<float> frequencyP_;
-    std::vector<float> frequencyN_;
+    std::array<float, kNumOscillators_> gains_;
+    std::array<float, kNumOscillators_> frequencyP_;
+    std::array<float, kNumOscillators_> frequencyN_;
+    std::array<std::unique_ptr<Wavetable>, kNumOscillators_> oscillators_;
 
-    std::vector<std::unique_ptr<Wavetable>> oscillators_;
+    std::vector<float> sineTable_;
+
     std::unique_ptr<GenerateWavetable> generation_;
 };

@@ -30,7 +30,7 @@ BASAudioProcessor::BASAudioProcessor()
     initialiseSynth();
 }
 
-BASAudioProcessor::~BASAudioProcessor() {}
+BASAudioProcessor::~BASAudioProcessor() = default;
 
 void BASAudioProcessor::initialiseSynth()
 {
@@ -110,7 +110,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout
 }
 
 void BASAudioProcessor::handleIncomingMidiMessage (
-    juce::MidiInput* source,
+    juce::MidiInput*,
     const juce::MidiMessage& message)
 {
     const juce::ScopedValueSetter<bool> scopedInputFlag (isAddingFromMidiInput,
@@ -120,8 +120,6 @@ void BASAudioProcessor::handleIncomingMidiMessage (
 
 void BASAudioProcessor::handleNoteOn (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity)
 {
-    juce::MidiMessage m (
-        juce::MidiMessage::noteOn (midiChannel, midiNoteNumber, velocity));
     synthesiser.noteOn (midiChannel, midiNoteNumber, velocity);
 }
 
@@ -130,8 +128,6 @@ void BASAudioProcessor::handleNoteOff (juce::MidiKeyboardState*,
                                        int midiNoteNumber,
                                        float velocity)
 {
-    juce::MidiMessage m (
-        juce::MidiMessage::noteOff (midiChannel, midiNoteNumber, velocity));
     synthesiser.noteOff (midiChannel, midiNoteNumber, velocity, true);
 }
 
@@ -185,12 +181,11 @@ int BASAudioProcessor::getNumPrograms()
 
 int BASAudioProcessor::getCurrentProgram() { return 0; }
 
-void BASAudioProcessor::setCurrentProgram (int index) {}
+void BASAudioProcessor::setCurrentProgram (int) {}
 
-const juce::String BASAudioProcessor::getProgramName (int index) { return {}; }
+const juce::String BASAudioProcessor::getProgramName (int) { return {}; }
 
-void BASAudioProcessor::changeProgramName (int index,
-                                           const juce::String& newName) {}
+void BASAudioProcessor::changeProgramName (int, const juce::String&) {}
 
 //==============================================================================
 void BASAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
