@@ -18,7 +18,7 @@ public:
     void drawTriangleWave (juce::Graphics& g, int startX, int startY, int amplitude, int wavelength, int period, juce::Colour colour);
     void setButtonColour (juce::Colour colourToUse);
 
-    int counter;
+    WavetableType currentWaveType = WavetableType::Sine;
 
 private:
     // Counter to keep track of the number of clicks

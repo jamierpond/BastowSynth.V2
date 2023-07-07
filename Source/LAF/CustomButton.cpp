@@ -1,6 +1,9 @@
 #include "CustomButton.h"
 
-CustomButton::CustomButton (WavetableSynthesiserVoice& voice) : juce::Button ("CustomButton"), counter (0), voice_ (&voice)
+CustomButton::CustomButton (WavetableSynthesiserVoice& voice)
+    : juce::Button ("CustomButton"),
+      currentWaveType (WavetableType::Sine),
+      voice_ (&voice)
 {
     setClickingTogglesState (true);
 }
@@ -120,16 +123,14 @@ void CustomButton::mouseDown (const juce::MouseEvent& event)
 {
     if (event.mods.isLeftButtonDown())
     {
-        counter++;
-
-        counter %= 4; // Reset counter back to 0 after reaching 3
+        const auto newWavetypeIndex = (static_cast<int> (currentWaveType) + 1) % numWavetableTypes;
+        currentWaveType = static_cast<WavetableType> (newWavetypeIndex);
 
         repaint(); // Trigger a repaint to update the button appearance
     }
     for (unsigned int n = 0; n < kNumOscillators_; ++n)
     {
-        //.setWaveType(n, counter + 1);
-        voice_->setWaveType (n, counter + 1);
+        voice_->setWaveType (n, currentWaveType);
     }
 }
 void CustomButton::setButtonColour (juce::Colour colourToUse)
@@ -138,21 +139,23 @@ void CustomButton::setButtonColour (juce::Colour colourToUse)
 }
 void CustomButton::paint (juce::Graphics& g)
 {
-    if (counter == 0)
+    switch (currentWaveType)
     {
-        drawSineWave (g, 0, 0, amplitude_, wavelength_, period_, mainSliderColour_);
-        // voice->setWaveType(33,1);
-    }
-    else if (counter == 1)
-    {
-        drawTriangleWave (g, 0, 0, amplitude_, wavelength_, period_, mainSliderColour_);
-    }
-    else if (counter == 2)
-    {
-        drawSquareWave (g, 0, 0, mainSliderColour_);
-    }
-    else if (counter == 3)
-    {
-        drawSawWave (g, 0, 0, mainSliderColour_);
+        case (WavetableType::Sine):
+            drawSineWave (g, 0, 0, amplitude_, wavelength_, period_, mainSliderColour_);
+            break;
+        case (WavetableType::Triangle):
+            drawTriangleWave (g, 0, 0, amplitude_, wavelength_, period_, mainSliderColour_);
+            break;
+        case (WavetableType::Square):
+            drawSquareWave (g, 0, 0, mainSliderColour_);
+            break;
+        case (WavetableType::Saw):
+            drawSawWave (g, 0, 0, mainSliderColour_);
+            break;
+        default:
+            // Oops, you're using an invalid wave type
+            jassertfalse;
+            break;
     }
 }

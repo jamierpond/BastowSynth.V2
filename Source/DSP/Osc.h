@@ -14,7 +14,7 @@ class WavetableSynthesiserVoice : public juce::SynthesiserVoice
 {
 public:
     WavetableSynthesiserVoice()
-        : waveType_ (kNumOscillators_, 4)
+        : waveType_ (kNumOscillators_, WavetableType::Sine)
     {
         // Initialize any necessary member variables
         CreateWaveTable();
@@ -57,15 +57,15 @@ public:
         return (float) hertz;
     }
 
-    void setWaveType (unsigned int index, int waveType)
+    void setWaveType (unsigned int index, WavetableType waveType)
     {
         // this is very confusing, is waveType changing size?
         if (4 < waveType_.size())
         {
             waveType_[index] = waveType;
             buttonPressed = true;
-            std::cout << "The value of number is: " << waveType << std::endl;
-            std::cout << "The vector of number is: " << waveType_[index] << std::endl;
+            std::cout << "The value of number is: " << (int) waveType << std::endl;
+            std::cout << "The vector of number is: " << (int) waveType_[index] << std::endl;
         }
     }
 
@@ -143,7 +143,7 @@ public:
     }
 
     // TODO
-    std::vector<int> waveType_;
+    std::vector<WavetableType> waveType_;
     bool buttonPressed = false;
 
 private:

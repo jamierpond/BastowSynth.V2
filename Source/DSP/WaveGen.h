@@ -7,6 +7,17 @@
 #include <arm_neon.h>
 #include <cmath>
 
+
+enum class WavetableType
+{
+    Sine = 0,
+    Triangle,
+    Square,
+    Saw,
+    NumWavetableTypes
+};
+constexpr static int numWavetableTypes = static_cast<int> (WavetableType::NumWavetableTypes);
+
 class GenerateWavetable
 {
 public:
