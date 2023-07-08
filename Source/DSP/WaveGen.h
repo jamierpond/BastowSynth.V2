@@ -37,13 +37,13 @@ public:
     inline float poly_blep (float t, float dt);
 
     // Creates the wave type and sets it to the wavetable
-    inline float prompt_WaveType (unsigned int waveNumber, float n);
+    inline float prompt_WaveType (WavetableType waveNumber, float n);
 
     // Used to create modulators
-    std::vector<Wavetable*> prompt_Modulator (std::vector<Wavetable*> gOscillators, unsigned int waveNumber);
+    std::vector<Wavetable*> prompt_Modulator (std::vector<Wavetable*> gOscillators, WavetableType waveNumber);
 
     // Used to create carriers
-    std::vector<float> prompt_Harmonics (unsigned int waveNumber);
+    std::vector<float> prompt_Harmonics (WavetableType waveNumber);
 
 private:
     // Buffer holding the wavetable

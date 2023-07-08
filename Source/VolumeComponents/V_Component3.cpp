@@ -4,7 +4,7 @@
 
 ThirdVCompartment::ThirdVCompartment (BASAudioProcessor& p) : frequencySliders (numSliders),
                                                               waveTypeB (numButtons),
-                                                              voice_ (std::make_unique<WavetableSynthesiserVoice>().release()),
+                                                              voice_ (std::make_unique<WavetableSynthesiserVoice>()),
                                                               audioProcessor_ (p),
                                                               resizableBorderComponent_ (&vComponent_, nullptr),
                                                               sliderArray_ (numSliders),

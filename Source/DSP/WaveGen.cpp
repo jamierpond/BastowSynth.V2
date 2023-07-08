@@ -58,44 +58,41 @@ float GenerateWavetable::poly_blep (float t /*phase*/, float dt /*phaseHalfIncre
     return vgetq_lane_f32 (result, 0);
 }
 
-float GenerateWavetable::prompt_WaveType (unsigned int waveNumber, float n)
+float GenerateWavetable::prompt_WaveType (WavetableType waveNumber, float n)
 {
-    // Set values for poly_blep
-    float dt = phaseIncrement_ / wavetable_.size();
-
-    float t = phase_;
-
-    // Initalise value for further use
     float value = 0.0f;
-
-    // Use argument waveNumber to change the type of the wave
     switch (waveNumber)
     {
-        case 1:
-            //Sine
+        case WavetableType::Sine:
             value = (sinf (2.0f * M_PI * (float) n / (float) wavetable_.size() + phase_));
             break;
-        case 2:
-            //Triangle
+        case WavetableType::Triangle:
             value = (2.0f * fabs (-1.0f + 2.0f * (float) n / (float) (wavetable_.size() - 1)) - 0.5f) + phase_;
             break;
-        case 3:
-            //Square
+        case WavetableType::Square:
             value = (sinf (2.0f * M_PI * (float) n / (float) wavetable_.size() + phase_));
             value = value >= 0.0f ? 1.0f : -1.0f;
             break;
-        case 4:
-            //Sawtooth
+        case WavetableType::Saw:
             value = (-1.0f + 2.0f * (float) n / (float) (wavetable_.size() - 1) + phase_);
             break;
+        case WavetableType::NumWavetableTypes:
+            // Oops, you're using an invalid wavetable type!
+            jassertfalse;
+            break;
     }
-    // Return the wave type and Subtract poly_blep
-    return value -= poly_blep (t, dt);
+    // TODO would be good to give these less obscure names like "dt" and "t"
+    const auto dt = phaseIncrement_ / (float)wavetable_.size();
+    const auto t = phase_;
+    const auto poly_blep_value = poly_blep (t, dt);
+    const auto final_value = value - poly_blep_value;
+    return final_value;
 }
+
 
 // Uses the wavetable_ defined from the constuctor to assign a wave type to wavetable_ then adds the
 // wavetable_ to <Wavetable*> and sends the <Wavetable*> back to render to be used
-std::vector<Wavetable*> GenerateWavetable::prompt_Modulator (std::vector<Wavetable*> gOscillators, unsigned int waveNumber)
+std::vector<Wavetable*> GenerateWavetable::prompt_Modulator (std::vector<Wavetable*> gOscillators, WavetableType waveNumber)
 {
     for (unsigned int n = 0; n < wavetable_.size(); n++)
     {
@@ -115,7 +112,7 @@ std::vector<Wavetable*> GenerateWavetable::prompt_Modulator (std::vector<Wavetab
 }
 
 // Uses the wavetable_ defined from the constuctor to assign a wave type to wavetable_ then returns value
-std::vector<float> GenerateWavetable::prompt_Harmonics (unsigned int waveNumber)
+std::vector<float> GenerateWavetable::prompt_Harmonics (WavetableType waveNumber)
 {
     for (unsigned int n = 0; n < wavetable_.size(); n++)
     {

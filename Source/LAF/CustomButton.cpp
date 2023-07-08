@@ -123,14 +123,13 @@ void CustomButton::mouseDown (const juce::MouseEvent& event)
 {
     if (event.mods.isLeftButtonDown())
     {
+        DBG("Left mouse button down");
         const auto newWavetypeIndex = (static_cast<int> (currentWaveType) + 1) % numWavetableTypes;
         currentWaveType = static_cast<WavetableType> (newWavetypeIndex);
 
+        voice_->setWaveType (0, currentWaveType);
+
         repaint(); // Trigger a repaint to update the button appearance
-    }
-    for (unsigned int n = 0; n < kNumOscillators_; ++n)
-    {
-        voice_->setWaveType (n, currentWaveType);
     }
 }
 void CustomButton::setButtonColour (juce::Colour colourToUse)

@@ -3,7 +3,7 @@
 // //https://corecoding.com/utilities/rgb-or-hex-to-float.php
 
 FirstVCompartment::FirstVCompartment (BASAudioProcessor& p) : audioProcessor_ (p),
-                                                              voice_ (std::make_unique<WavetableSynthesiserVoice>().release()),
+                                                              voice_ (std::make_unique<WavetableSynthesiserVoice>()),
                                                               waveTypeB (numButtons),
                                                               sliderArray_ (numSliders),
                                                               frequencyAttachments_ (numSliders),

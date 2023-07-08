@@ -3,6 +3,23 @@
 #include "WaveSetup.h"
 #include <JuceHeader.h>
 
+struct InstanceCounter
+{
+    InstanceCounter()
+    {
+        ++count;
+        DBG("InstanceCounter: " << count);
+    }
+
+    ~InstanceCounter()
+    {
+        --count;
+        DBG("InstanceCounter: " << count);
+    }
+
+    static int count;
+};
+
 class WavetableSynthesiserSound : public juce::SynthesiserSound
 {
 public:
@@ -10,7 +27,7 @@ public:
     bool appliesToChannel (int /*midiChannel*/) override { return true; }
 };
 
-class WavetableSynthesiserVoice : public juce::SynthesiserVoice
+class WavetableSynthesiserVoice : public juce::SynthesiserVoice, public InstanceCounter
 {
 public:
     WavetableSynthesiserVoice()
@@ -60,13 +77,8 @@ public:
     void setWaveType (unsigned int index, WavetableType waveType)
     {
         // this is very confusing, is waveType changing size?
-        if (4 < waveType_.size())
-        {
-            waveType_[index] = waveType;
-            buttonPressed = true;
-            std::cout << "The value of number is: " << (int) waveType << std::endl;
-            std::cout << "The vector of number is: " << (int) waveType_[index] << std::endl;
-        }
+        waveType_[index] = waveType;
+        shouldUpdateOscillators = true;
     }
 
     float pitchBendCents (int index)
@@ -87,16 +99,6 @@ public:
     {
         float oscillatorFrequency;
         float oscGain;
-
-        if (buttonPressed == true)
-        {
-            changeOscillator();
-            buttonPressed = false; // Reset the flag after changing the oscillator
-        }
-        else
-        {
-            buttonPressed = true;
-        }
 
         for (unsigned int n = 0; n < kNumOscillators_; ++n)
         {
@@ -127,6 +129,14 @@ public:
 
     void renderNextBlock (juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
     {
+        if (shouldUpdateOscillators)
+        {
+            updateOscillators();
+            DBG("Updating oscillators");
+            shouldUpdateOscillators = false;
+        }
+
+
         for (int sample = 0; sample < numSamples; ++sample)
         {
             float value = 0.0f;
@@ -144,28 +154,26 @@ public:
 
     // TODO
     std::vector<WavetableType> waveType_;
-    bool buttonPressed = false;
+    bool shouldUpdateOscillators = false;
 
 private:
     void CreateWaveTable()
     {
-        sineTable_.clear();
-        sineTable_.resize (wavetableSize_);
-        generation_ = std::make_unique<GenerateWavetable> ((float) getSampleRate(), sineTable_, phase_);
         for (unsigned int n = 0; n < kNumOscillators_; ++n)
         {
-            sineTable_ = generation_->prompt_Harmonics ((1));
+            wavetables_[n].clear();
+            wavetables_[n].resize (wavetableSize_);
+            generation_ = std::make_unique<GenerateWavetable> ((float) getSampleRate(), wavetables_[n], phase_);
+            wavetables_[n] = generation_->prompt_Harmonics (waveType_[n]);
         }
     }
 
     void CreateNewWaveTable()
     {
-        sineTable_.clear();
-        sineTable_.resize (wavetableSize_);
-        generation_ = std::make_unique<GenerateWavetable> ((float) getSampleRate(), sineTable_, phase_);
         for (unsigned int n = 0; n < kNumOscillators_; ++n)
         {
-            sineTable_ = generation_->prompt_Harmonics (static_cast<unsigned int> (waveType_[n]));
+            generation_ = std::make_unique<GenerateWavetable> ((float) getSampleRate(), wavetables_[n], phase_);
+            wavetables_[n] = generation_->prompt_Harmonics (waveType_[n]);
         }
     }
 
@@ -174,26 +182,17 @@ private:
         CreateWaveTable();
         for (unsigned int n = 0; n < kNumOscillators_; ++n)
         {
-            oscillators_[n] = std::make_unique<Wavetable> ((float) getSampleRate(), sineTable_, phase_);
+            oscillators_[n] = std::make_unique<Wavetable> ((float) getSampleRate(), wavetables_[n], phase_);
         }
     }
-    void changeOscillator()
-    {
-        if (buttonPressed == true)
-        {
-            CreateNewWaveTable();
-            buttonPressed = false; // Reset the flag after changing the oscillator
 
-            for (unsigned int n = 0; n < kNumOscillators_; ++n)
-            {
-                oscillators_[n] = std::make_unique<Wavetable> ((float) getSampleRate(), sineTable_, phase_);
-            }
-        }
-        else
-        {
-            buttonPressed = true; // Set the flag to false if it was previously true
-        }
+    void updateOscillators()
+    {
+        DBG("Updating oscillators");
+        CreateNewWaveTable();
+        CreateOscillator();
     }
+
     constexpr static unsigned int kNumOscillators_ = 33;
     constexpr static size_t wavetableSize_ = 1024;
 
@@ -209,7 +208,7 @@ private:
     std::array<float, kNumOscillators_> frequencyN_;
     std::array<std::unique_ptr<Wavetable>, kNumOscillators_> oscillators_;
 
-    std::vector<float> sineTable_;
+    std::vector<std::vector<float>> wavetables_ { kNumOscillators_ };
 
     std::unique_ptr<GenerateWavetable> generation_;
 };

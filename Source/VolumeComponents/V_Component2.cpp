@@ -3,7 +3,7 @@
 // //https://corecoding.com/utilities/rgb-or-hex-to-float.php
 
 SecondVCompartment::SecondVCompartment (BASAudioProcessor& p) : frequencySliders (numSliders),
-                                                                voice_ (std::make_unique<WavetableSynthesiserVoice>().release()),
+                                                                voice_ (std::make_unique<WavetableSynthesiserVoice>()),
                                                                 waveTypeB (numButtons),
                                                                 audioProcessor_ (p),
                                                                 sliderArray_ (numSliders),

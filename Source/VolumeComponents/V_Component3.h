@@ -47,7 +47,7 @@ private:
     MyResizableBorderComponent resizableBorderComponent_;
     // ParameterNames parameterNames_;
 
-    WavetableSynthesiserVoice* voice_;
+    std::unique_ptr<WavetableSynthesiserVoice> voice_;
 
     //-------------------------------------------------------------------------------
     std::vector<BastowFreqSlider*> sliderArray_;

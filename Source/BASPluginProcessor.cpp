@@ -260,7 +260,6 @@ void BASAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
                     "freqId" + std::to_string (static_cast<std::size_t> (n))));
                 button[n] = static_cast<int> (*tree.getRawParameterValue (
                     "waveTypeId" + std::to_string (static_cast<std::size_t> (n))));
-                voice->buttonPressed = (button[n] == 1);
                 voice->setFrequency (n, frequency[n]);
             }
         }
